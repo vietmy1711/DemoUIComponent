@@ -23,12 +23,28 @@ class PushViewController: UIViewController {
         // Do any additional setup after loading the view.
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         txfTextField.delegate = self
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(sender:)), name: UIResponder.keyboardWillShowNotification, object: nil);
+
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(sender:)), name: UIResponder.keyboardWillHideNotification, object: nil);
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = false
         navigationItem.title = "Push View Controller"
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc func keyboardWillShow(sender: NSNotification) {
+         self.view.frame.origin.y = -150 // Move view 150 points upward
+    }
+
+    @objc func keyboardWillHide(sender: NSNotification) {
+         self.view.frame.origin.y = 0 // Move view to original position
     }
     
     @IBAction func btnClicked(_ sender: UIButton) {
